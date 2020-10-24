@@ -1,5 +1,8 @@
 package MyCalc;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,8 +21,8 @@ public class MyCalculator implements ActionListener {
         f.repaint();
 
         tf =  new JTextField();
-        tf.setBounds(10,10,290,40);
-        tf.setBackground(Color.red);
+        tf.setBounds(10,5,280,40);
+        ;
         clear = new JButton("AC");
         cross = new JButton("C");
         percent = new JButton("%");
@@ -36,7 +39,7 @@ public class MyCalculator implements ActionListener {
         two = new JButton("2");
         three =  new JButton("3");
         plus =  new JButton("+");
-        no = new JButton("no");
+        no = new JButton("^");
         zero =  new JButton("0");
         decimal = new JButton(".");
         result=  new JButton("=");
@@ -79,6 +82,7 @@ public class MyCalculator implements ActionListener {
         zero.addActionListener(this);
         decimal.addActionListener(this);
         result.addActionListener(this);
+        no.addActionListener(this);
 
 
 
@@ -145,6 +149,9 @@ public class MyCalculator implements ActionListener {
         else if(e.getSource() == mult) {
             tf.setText(tf.getText() + "*");
         }
+        else if(e.getSource() == no) {
+            tf.setText(tf.getText() + "^");
+        }
         else if(e.getSource() == clear) {
             tf.setText("");
         }
@@ -152,9 +159,17 @@ public class MyCalculator implements ActionListener {
             StringBuffer str = new StringBuffer(tf.getText());
             str.deleteCharAt(str.length()-1);
             tf.setText(str.toString());
+        } else if(e.getSource() == result) {
+            ScriptEngineManager manager = new ScriptEngineManager();
+            ScriptEngine engine = manager.getEngineByName("js");
+            try {
+                Object result = engine.eval(tf.getText());
+                tf.setText(result.toString());
+            } catch (ScriptException scriptException) {
+                tf.setText("Invalid Syntax");
+            }
+
         }
-
-
 
     }
 }
